@@ -7,7 +7,7 @@
     <tr>
         <th>${ui.message('general.name')}</th>
         <th>${ui.message('general.description')}</th>
-        <th>${ui.message('general.action')}</th>
+        <th class="adminui-action-column">${ui.message('general.action')}</th>
     </tr>
     </thead>
     <tbody>
@@ -22,7 +22,10 @@
                 <i class="icon-remove delete-action" title="${ui.message("emr.delete")}"></i>
             </a>
             <a ng-show="encounterType.retired" ng-click="unretire(encounterType)">
-                <i class="icon-reply edit-action" title="${ui.message("uicommons.unretire")}"></i>
+                <i class="icon-reply edit-action" title="${ui.message("general.restore")}"></i>
+            </a>
+            <a ng-click="purge(encounterType)" class="right">
+                <i class="icon-trash delete-action" title="${ui.message("general.purge")}"></i>
             </a>
         </td>
     </tr>

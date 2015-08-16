@@ -56,22 +56,43 @@ angular.module("manageEncounterTypes", [ "encounterTypeService", "ngDialog", "ui
                         reason: reason
                     }).$promise.then(function() {
                         loadEncounterTypes();
+                            emr.successMessage(emr.message("adminui.retired"));
                     });
                 });
             }
 
             $scope.unretire = function(encounterType) {
-                // will fail until RESTWS-456
                 EncounterType.save({
                     uuid: encounterType.uuid,
                     retired: false
                 }).$promise.then(function() {
                     loadEncounterTypes();
+                        emr.successMessage(emr.message("adminui.restored"));
                 })
             }
 
             $scope.edit = function(encounterType) {
                 $state.go("edit", { encounterTypeUuid: encounterType.uuid });
+            },
+
+            $scope.purge = function(encounterType) {
+                ngDialog.openConfirm({
+                    showClose: false,
+                    closeByEscape: true,
+                    closeByDocument: true,
+                    template: "templates/purgeEncounterTypeDialog.page",
+                    controller: function($scope) {
+                        $scope.encounterType = encounterType;
+                    }
+                }).then(function() {
+                    EncounterType.delete({
+                        uuid: encounterType.uuid,
+                        purge: ""
+                    }).$promise.then(function() {
+                        loadEncounterTypes();
+                        emr.successMessage(emr.message("adminui.purged"));
+                    })
+                });
             }
 
             loadEncounterTypes();
@@ -88,11 +109,11 @@ angular.module("manageEncounterTypes", [ "encounterTypeService", "ngDialog", "ui
                     name: $scope.encounterType.name,
                     description: $scope.encounterType.description
                 }
+
+                var successMessageCode = ($scope.encounterType.uuid) ? "adminui.savedChanges" : "adminui.saved";
                 EncounterType.save(toSave).$promise.then(function() {
                     $state.go("list");
-                    emr.successMessage(emr.message("uicommons.generalSavedNotification"));
-                }, function() {
-                    // TODO handle server-side errors
+                    emr.successMessage(emr.message(successMessageCode));
                 })
             }
         }]);

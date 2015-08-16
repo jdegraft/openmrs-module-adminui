@@ -1,7 +1,7 @@
 <%
     ui.decorateWith("appui", "standardEmrPage")
-
     ui.includeJavascript("adminui", "jquery.validate.js")
+    ui.includeCss("adminui", "adminui.css")
 
     def createLocationTag = (locationTag.locationTagId == null ? true : false);
 %>
@@ -24,15 +24,13 @@
             rules: {
                 "name": {
                     required: true,
-                    minlength: 3,
                     maxlength: 255
                 },
                 "description": {
-                    required: false,
                     maxlength: 1024
                 }
             },
-            errorClass: "error",
+            errorClass: "field-error",
             validClass: "",
             onfocusout: function (element) {
                 jq(element).valid();
@@ -56,11 +54,31 @@
 
 <h2>${ ui.message((createLocationTag) ? "adminui.addLocationTag.label" : "adminui.editLocationTag.label") }</h2>
 
+<% if(!createLocationTag) { %>
+<fieldset class="right adminui-auditInfo">
+    <legend>${ui.message('adminui.auditInfo')}</legend>
+    <p>
+        <label class="adminui-label">${ui.message('general.uuid')}:</label> ${ locationTag.uuid }
+    </p>
+    <% if(locationTag.creator) { %>
+    <p>
+        <span class="adminui-label">${ui.message('general.createdBy')}:</span> ${ ui.format(locationTag.creator) }
+        <label class="adminui-label">${ui.message('general.onDate')}</label> ${ ui.format(locationTag.dateCreated) }
+    </p>
+    <% } %>
+    <% if(locationTag.changedBy) { %>
+    <p>
+        <span class="adminui-label">${ui.message('general.changedBy')}:</span> ${ ui.format(locationTag.changedBy) }
+        <label class="adminui-label">${ui.message('general.onDate')}</label> ${ ui.format(locationTag.dateChanged) }
+    </p>
+    <% } %>
+</fieldset>
+<% } %>
 
-<form class="simple-form-ui" method="post" id="locationTagForm" autocomplete="off">
-<fieldset>
+<form class="simple-form-ui" id="locationTagForm" method="post">
+
     ${ui.includeFragment("uicommons", "field/text", [
-            label        : ui.message("general.name")+"*",
+            label        : ui.message("general.name")+"<span class='adminui-text-red'>*</span>",
             formFieldName: "name",
             id           : "name",
             maxLength    : 101,
@@ -71,27 +89,13 @@
             label        : ui.message("general.description"),
             formFieldName: "description",
             id           : "description",
-            initialValue : (locationTag.description ?: '')
+            initialValue : (locationTag.description ?: ''),
+            cols         : 54
     ])}
 
-    <div>
+    <p>
         <input type="button" class="cancel" value="${ui.message("general.cancel")}" onclick="window.location='/${ contextPath }/adminui/metadata/locations/manageLocationTags.page'"/>
         <input type="submit" class="confirm" name="save" id="save-button" value="${ui.message("general.save")}"/>
-    </div>
-    </fieldset>
-
-    <% if(!createLocationTag) { %>
-            <div>
-                <fieldset>
-                    ${ui.includeFragment("uicommons", "field/text", [
-                        label        : ui.message("general.retireReason"),
-                        formFieldName: "retireReason",
-                        id           : "retireReason",
-                        initialValue : (locationTag.retireReason ?: '')
-                    ])}
-                    <input type="submit" class="button" name="retire" id="retire-button" value="${ui.message("adminui.locationTag.retire")}"/>
-                </fieldset>
-            </div>
-    <% } %>
+    </p>
 
 </form>
