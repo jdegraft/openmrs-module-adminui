@@ -6,8 +6,9 @@
     ui.includeJavascript("uicommons", "navigator/navigatorModels.js", Integer.MAX_VALUE - 21)
     ui.includeJavascript("uicommons", "navigator/exitHandlers.js", Integer.MAX_VALUE - 22);
 
+	
     def localeOptions = []
-    locales.each {
+    userDefaults.displayLocales.each {
         localeOptions.add([label: it.displayName, value: it.toString()])
     }
 %>
@@ -40,14 +41,17 @@ ${ui.includeFragment("uicommons", "validationMessages")}
                     label        : ui.message("adminui.account.defaultLocale"),
                     formFieldName: "defaultLocale",
                     options      : localeOptions,
-                    initialValue : userDefaults.defaultLocale
+                    initialValue : (userDefaults.defaultLocale ?: '')
             ])}
-            ${ui.includeFragment("uicommons", "field/text", [
-                    id           : "proficient-locales",
-                    label        : ui.message("adminui.account.proficientLocales"),
-                    formFieldName: "proficientLocales",
-                    initialValue : userDefaults.proficientLocales
-            ])} ${ui.message('adminui.example')}: "en_US, en_GB, en, fr_RW"
+            <legend>${ui.message("adminui.account.proficientLocales")}</legend>
+            <% userDefaults.proficientLocalesSet.each{ %>
+	  	     	${ ui.includeFragment("uicommons", "field/checkbox", [ 
+	  	     			label: it.language,
+		 	            formFieldName: "proficientLocalesList",
+		 	            value: it.name, 
+		                checked : it.selected
+	 	        ])} 
+ 	        <% } %>
         </fieldset>
     </section>
 
