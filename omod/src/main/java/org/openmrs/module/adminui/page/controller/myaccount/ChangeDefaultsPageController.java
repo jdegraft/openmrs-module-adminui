@@ -271,7 +271,7 @@ public class ChangeDefaultsPageController {
                 		locOption.selected = true;
                 	}
                 }
-            }
+            } 
         }
         
         private void clearProficientLocalesSet()

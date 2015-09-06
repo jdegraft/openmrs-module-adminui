@@ -48,7 +48,7 @@ ${ui.includeFragment("uicommons", "validationMessages")}
 	  	     	${ ui.includeFragment("uicommons", "field/checkbox", [ 
 	  	     			label: it.language,
 		 	            formFieldName: "proficientLocalesList",
-		 	            value: it.name, 
+		 	            value: it.name,
 		                checked : it.selected
 	 	        ])} 
  	        <% } %>
